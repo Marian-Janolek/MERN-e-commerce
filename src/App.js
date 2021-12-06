@@ -1,3 +1,4 @@
+import Cart from './pages/Cart';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import ProductList from './pages/ProductList';
@@ -7,7 +8,7 @@ import SingleProduct from './pages/SingleProduct';
 function App() {
   return (
     <div>
-      <Login />
+      <Cart />
     </div>
   );
 }
