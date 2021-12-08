@@ -5,9 +5,33 @@ import Annoucment from '../components/Annoucment';
 import Footer from '../components/Footer';
 import Navbar from '../components/Navbar';
 import { mobile } from '../responsive';
+import StripeCheckout from 'react-stripe-checkout';
+import { useState, useEffect } from 'react';
+import { userRequest } from '../requestMethods';
+import { useHistory } from 'react-router';
+
+const KEY = process.env.REACT_APP_STRIPE;
 
 const Cart = () => {
   const cart = useSelector((state) => state.cart);
+  const [stripeToken, setStripeToken] = useState(null);
+  const history = useHistory();
+  const onToken = (token) => {
+    setStripeToken(token);
+  };
+
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const { data } = await userRequest.post('/checkout/payment', {
+          tokenId: stripeToken.id,
+          amount: cart.total * 100,
+        });
+        history.push('/success', { stripeData: data, products: cart });
+      } catch (error) {}
+    };
+    stripeToken && makeRequest();
+  }, [stripeToken, cart.total, history]);
 
   return (
     <Container>
@@ -74,7 +98,18 @@ const Cart = () => {
               <SummaryItemText>Total</SummaryItemText>
               <SummaryItemPrice>{cart.total} €</SummaryItemPrice>
             </SummaryItem>
-            <SummaryBtn>CHECKOUT NOW</SummaryBtn>
+            <StripeCheckout
+              name="Lama Shop"
+              image="https://avatars.githubusercontent.com/u/1486366?v=4"
+              billingAddress
+              shippingAddress
+              description={`Your total is ${cart.total} €`}
+              amount={cart.total * 100}
+              token={onToken}
+              stripeKey={KEY}
+            >
+              <SummaryBtn>CHECKOUT NOW</SummaryBtn>
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>
