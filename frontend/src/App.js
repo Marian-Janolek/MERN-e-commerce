@@ -12,7 +12,7 @@ import {
 } from 'react-router-dom';
 
 function App() {
-  const user = true;
+  const user = false;
 
   return (
     <Router>
@@ -23,7 +23,7 @@ function App() {
         <Route path="/products">
           <ProductList />
         </Route>
-        <Route path="/prodct/:id">
+        <Route path="/product/:id">
           <SingleProduct />
         </Route>
         <Route path="/cart">
